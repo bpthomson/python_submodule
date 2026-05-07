@@ -27,8 +27,8 @@ def _log(name = None, _status = None, data = None, ot = {}, _file = None):
         
         append_to_file(f'log/{path}', pre)
         return
-    except:
-        core.general.error('ERROR occured while logging, ignoring.')
+    except Exception as e:
+        core.general.error(f'ERROR occured while logging, ignoring.\n{e}')
         return
 
 # def info(name = None, *data, **ot):
@@ -42,6 +42,22 @@ def _log(name = None, _status = None, data = None, ot = {}, _file = None):
 
 # def error(name = None, *data, **ot):
 #     return _log(data = data, name = name, _status = 'ERROR', ot = ot)
+
+class log:
+    def __init__(self, name: str):
+        self.path = f'{name}.log'
+        
+    def info(self, name = None):
+        return lambda *data, **ot: _log(data = data, name = name, _status = 'INFO ', ot = ot, _file = self.path)
+
+    def debug(self, name = None):
+        return lambda *data, **ot: _log(data = data, name = name, _status = 'DEBUG', ot = ot, _file = self.path)
+
+    def warning(self, name = None):
+        return lambda *data, **ot: _log(data = data, name = name, _status = 'WARN ', ot = ot, _file = self.path)
+
+    def error(self, name = None):
+        return lambda *data, **ot: _log(data = data, name = name, _status = 'ERROR', ot = ot, _file = self.path)    
 
 def info(name = None, filename = None):
     return lambda *data, **ot: _log(data = data, name = name, _status = 'INFO ', ot = ot, _file = filename)
